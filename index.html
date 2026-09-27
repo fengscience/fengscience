@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冯言冯语听冯说 | Feng Talks Science</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "PingFang SC",
+        "Microsoft YaHei",
+        sans-serif;
+    background: #050912;
+    color: #ffffff;
+    overflow-x: hidden;
+}
+/* 星空背景 */
+#stars {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(0,180,255,.15), transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(90,60,255,.13), transparent 30%),
+        #050912;
+}
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: .7;
+    animation: twinkle 3s infinite alternate;
+}
+@keyframes twinkle {
+    from { opacity: .2; }
+    to { opacity: 1; }
+}
+/* 顶部导航 */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    padding: 22px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(15px);
+    background: rgba(5,9,18,.55);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    z-index: 10;
+}
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.logo span {
+    color: #4fdcff;
+}
+nav a {
+    color: #aebdcc;
+    text-decoration: none;
+    margin-left: 25px;
+    transition: .3s;
+}
+nav a:hover {
+    color: #4fdcff;
+}
+/* Hero */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 20px 80px;
+}
+.hero-content {
+    max-width: 900px;
+}
+.badge {
+    display: inline-block;
+    padding: 8px 18px;
+    border: 1px solid rgba(79,220,255,.4);
+    border-radius: 30px;
+    color: #4fdcff;
+    background: rgba(79,220,255,.06);
+    margin-bottom: 28px;
+    font-size: 14px;
+}
+h1 {
+    font-size: clamp(42px, 8vw, 82px);
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: 3px;
+    background: linear-gradient(
+        90deg,
+        #ffffff,
+        #4fdcff,
+        #8f7cff,
+        #ffffff
+    );
+    background-size: 250%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: gradientMove 6s linear infinite;
+}
+@keyframes gradientMove {
+    0% { background-position: 0%; }
+    100% { background-position: 250%; }
+}
+.english {
+    margin-top: 20px;
+    font-size: clamp(20px, 3vw, 30px);
+    color: #9caec0;
+    letter-spacing: 4px;
+}
+.intro {
+    max-width: 650px;
+    margin: 35px auto;
+    color: #8495a7;
+    font-size: 18px;
+    line-height: 1.9;
+}
+/* 按钮 */
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+.button {
+    padding: 13px 28px;
+    border-radius: 30px;
+    text-decoration: none;
+    transition: .3s;
+}
+.primary {
+    color: #031019;
+    background: #4fdcff;
+    box-shadow: 0 0 25px rgba(79,220,255,.25);
+}
+.secondary {
+    color: white;
+    border: 1px solid #334352;
+    background: rgba(255,255,255,.03);
+}
+.button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0,0,0,.3);
+}
+/* 内容区域 */
+section {
+    max-width: 1100px;
+    margin: auto;
+    padding: 100px 25px;
+}
+.section-title {
+    text-align: center;
+    font-size: 38px;
+    margin-bottom: 15px;
+}
+.section-subtitle {
+    text-align: center;
+    color: #718295;
+    margin-bottom: 50px;
+}
+/* 平台卡片 */
+.platforms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 22px;
+}
+.card {
+    padding: 35px 25px;
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.07),
+            rgba(255,255,255,.025)
+        );
+    border: 1px solid rgba(255,255,255,.09);
+    backdrop-filter: blur(15px);
+    transition: .35s;
+}
+.card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(79,220,255,.5);
+    box-shadow: 0 15px 50px rgba(0,150,255,.12);
+}
+.icon {
+    font-size: 38px;
+    margin-bottom: 18px;
+}
+.card h3 {
+    font-size: 21px;
+    margin-bottom: 10px;
+}
+.card p {
+    color: #7e8e9f;
+    line-height: 1.7;
+}
+/* 科学理念 */
+.quote {
+    text-align: center;
+    padding: 80px 25px;
+}
+.quote-text {
+    font-size: clamp(25px, 5vw, 42px);
+    line-height: 1.5;
+    font-weight: 600;
+    color: #dce9f5;
+}
+.quote-text span {
+    color: #4fdcff;
+}
+/* 页脚 */
+footer {
+    text-align: center;
+    padding: 50px 20px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    color: #5d6c7b;
+}
+footer strong {
+    color: #8fa3b6;
+}
+/* 手机适配 */
+@media (max-width: 600px) {
+    nav {
+        padding: 18px 20px;
+    }
+    nav div:last-child {
+        display: none;
+    }
+    .hero {
+        padding-top: 130px;
+    }
+    .english {
+        letter-spacing: 2px;
+    }
+    section {
+        padding: 70px 20px;
+    }
+}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<!-- 导航 -->
+<nav>
+    <div class="logo">
+        <span>Feng</span> Science
+    </div>
+    <div>
+        <a href="#about">关于</a>
+        <a href="#platforms">平台</a>
+    </div>
+</nav>
+<!-- 首页 -->
+<header class="hero">
+    <div class="hero-content">
+        <div class="badge">
+            SCIENCE · CURIOSITY · THINKING
+        </div>
+        <h1>
+            冯言冯语听冯说
+        </h1>
+        <div class="english">
+            Feng Talks Science
+        </div>
+        <p class="intro">
+            用科学理解世界，
+            用证据认识真相，
+            用科学思维面对未知。
+            <br>
+            一个属于老冯的科学科普空间。
+        </p>
+        <div class="buttons">
+            <a href="#platforms" class="button primary">
+                探索我的平台
+            </a>
+            <a href="#about" class="button secondary">
+                了解更多
+            </a>
+        </div>
+    </div>
+</header>
+<!-- 关于 -->
+<section id="about">
+    <h2 class="section-title">
+        About
+    </h2>
+    <p class="section-subtitle">
+        关于 Feng Talks Science
+    </p>
+    <div class="card">
+        <p style="
+            color:#a9b8c7;
+            font-size:18px;
+            line-height:2;
+            text-align:center;
+        ">
+            <strong>冯言冯语听冯说</strong>
+            是一个科学科普项目。
+            <br><br>
+            这里关注自然科学、科学史、
+            科学发现以及科学思维。
+            <br>
+            希望把复杂的科学知识讲清楚，
+            也希望让更多人保持好奇，
+            尊重证据，独立思考。
+        </p>
+    </div>
+</section>
+<!-- 平台 -->
+<section id="platforms">
+    <h2 class="section-title">
+        我的平台
+    </h2>
+    <p class="section-subtitle">
+        Find Feng Talks Science
+    </p>
+    <div class="platforms">
+        <div class="card">
+            <div class="icon">💬</div>
+            <h3>微信公众号</h3>
+            <p>
+                阅读科学文章、
+                科普故事与科学思考。
+            </p>
+        </div>
+        <div class="card">
+            <div class="icon">🎬</div>
+            <h3>视频号</h3>
+            <p>
+                用视频探索科学，
+                让科学知识更加直观。
+            </p>
+        </div>
+        <div class="card">
+            <div class="icon">🎙️</div>
+            <h3>喜马拉雅</h3>
+            <p>
+                收听「冯言冯语听冯说」，
+                在声音中探索科学世界。
+            </p>
+        </div>
+        <div class="card">
+            <div class="icon"></div>
+            <h3>Apple Podcasts</h3>
+            <p>
+                Listen to
+                <strong>Feng Talks Science</strong>
+                wherever you go.
+            </p>
+        </div>
+    </div>
+</section>
+<!-- 科学理念 -->
+<div class="quote">
+    <div class="quote-text">
+        <span>保持好奇</span>，
+        尊重证据，
+        <br>
+        用科学思维认识世界。
+    </div>
+</div>
+<!-- 页脚 -->
+<footer>
+    <strong>冯言冯语听冯说</strong>
+    ·
+    Feng Talks Science
+    <br><br>
+    © 2026 Feng Science
+</footer>
+<!-- 星空生成 -->
+<script>
+const stars = document.getElementById("stars");
+for (let i = 0; i < 120; i++) {
+    const star = document.createElement("div");
+    star.className = "star";
+    star.style.left = Math.random() * 100 + "%";
+    star.style.top = Math.random() * 100 + "%";
+    star.style.animationDelay =
+        Math.random() * 3 + "s";
+    star.style.opacity =
+        Math.random();
+    stars.appendChild(star);
+}
+</script>
+</body>
+</html>
