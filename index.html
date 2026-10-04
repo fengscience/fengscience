@@ -132,6 +132,23 @@ h1 {
     font-size: 18px;
     line-height: 1.9;
 }
+/* 品牌口号 */
+.slogan {
+    margin: 0 auto 35px;
+    font-size: clamp(20px, 3.5vw, 30px);
+    font-weight: 700;
+    letter-spacing: 2px;
+    background: linear-gradient(
+        90deg,
+        #4fdcff,
+        #8f7cff,
+        #4fdcff
+    );
+    background-size: 200%;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: gradientMove 6s linear infinite;
+}
 /* 按钮 */
 .buttons {
     display: flex;
@@ -182,6 +199,9 @@ section {
     gap: 22px;
 }
 .card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
     padding: 35px 25px;
     border-radius: 20px;
     background:
@@ -225,6 +245,42 @@ section {
 .quote-text span {
     color: #4fdcff;
 }
+/* 联系 */
+.contact-card {
+    text-align: center;
+    padding: 45px 25px;
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.07),
+            rgba(255,255,255,.025)
+        );
+    border: 1px solid rgba(255,255,255,.09);
+    backdrop-filter: blur(15px);
+}
+.contact-text {
+    color: #8495a7;
+    font-size: 17px;
+    margin-bottom: 22px;
+}
+.contact-email {
+    display: inline-block;
+    padding: 14px 30px;
+    border-radius: 30px;
+    color: #031019;
+    background: #4fdcff;
+    font-size: 17px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 0 25px rgba(79,220,255,.25);
+    transition: .3s;
+    word-break: break-all;
+}
+.contact-email:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(79,220,255,.35);
+}
 /* 页脚 */
 footer {
     text-align: center;
@@ -234,6 +290,19 @@ footer {
 }
 footer strong {
     color: #8fa3b6;
+}
+.footer-slogan {
+    margin-bottom: 18px;
+    color: #4fdcff;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+footer a {
+    color: #4fdcff;
+    text-decoration: none;
+}
+footer a:hover {
+    text-decoration: underline;
 }
 /* 手机适配 */
 @media (max-width: 600px) {
@@ -265,6 +334,7 @@ footer strong {
     <div>
         <a href="#about">关于</a>
         <a href="#platforms">平台</a>
+        <a href="#contact">联系</a>
     </div>
 </nav>
 <!-- 首页 -->
@@ -286,6 +356,9 @@ footer strong {
             <br>
             一个属于老冯的科学科普空间。
         </p>
+        <div class="slogan">
+            用科学看世界，用思考辨真伪！
+        </div>
         <div class="buttons">
             <a href="#platforms" class="button primary">
                 探索我的平台
@@ -348,14 +421,23 @@ footer strong {
                 让科学知识更加直观。
             </p>
         </div>
-        <div class="card">
+        <a class="card" href="https://xima.tv/1_3K4mKX?_sonic=0" target="_blank" rel="noopener">
             <div class="icon">🎙️</div>
-            <h3>喜马拉雅</h3>
+            <h3>喜马拉雅 · 中文版</h3>
             <p>
                 收听「冯言冯语听冯说」，
                 在声音中探索科学世界。
             </p>
-        </div>
+        </a>
+        <a class="card" href="https://xima.tv/1_AwdrkL?_sonic=0" target="_blank" rel="noopener">
+            <div class="icon">🎧</div>
+            <h3>喜马拉雅 · 英文版</h3>
+            <p>
+                Listen to
+                <strong>Feng Talks Science</strong>
+                in English.
+            </p>
+        </a>
         <div class="card">
             <div class="icon"></div>
             <h3>Apple Podcasts</h3>
@@ -376,11 +458,35 @@ footer strong {
         用科学思维认识世界。
     </div>
 </div>
+<!-- 联系 -->
+<section id="contact">
+    <h2 class="section-title">
+        Contact
+    </h2>
+    <p class="section-subtitle">
+        合作 · 交流 · 建议
+    </p>
+    <div class="contact-card">
+        <p class="contact-text">
+            欢迎交流科学话题、内容合作或提出建议
+        </p>
+        <a class="contact-email" href="mailto:laofengkepu@gmail.com">
+            ✉️ laofengkepu@gmail.com
+        </a>
+    </div>
+</section>
 <!-- 页脚 -->
 <footer>
+    <div class="footer-slogan">
+        用科学看世界，用思考辨真伪！
+    </div>
     <strong>冯言冯语听冯说</strong>
     ·
     Feng Talks Science
+    <br><br>
+    <a href="mailto:laofengkepu@gmail.com">
+        laofengkepu@gmail.com
+    </a>
     <br><br>
     © 2026 Feng Science
 </footer>
