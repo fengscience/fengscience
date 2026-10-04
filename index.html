@@ -213,6 +213,7 @@ section {
     border: 1px solid rgba(255,255,255,.09);
     backdrop-filter: blur(15px);
     transition: .35s;
+    cursor: pointer;
 }
 .card:hover {
     transform: translateY(-8px);
@@ -243,6 +244,69 @@ section {
     color: #dce9f5;
 }
 .quote-text span {
+    color: #4fdcff;
+}
+/* 理念栏目 */
+.philosophy {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+}
+.philosophy-card {
+    position: relative;
+    padding: 40px 28px 32px;
+    border-radius: 20px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.07),
+            rgba(255,255,255,.025)
+        );
+    border: 1px solid rgba(255,255,255,.09);
+    backdrop-filter: blur(15px);
+    transition: .35s;
+}
+.philosophy-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(79,220,255,.5);
+    box-shadow: 0 15px 50px rgba(0,150,255,.12);
+}
+.philosophy-num {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 700;
+    color: #031019;
+    background: #4fdcff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+}
+.philosophy-card h3 {
+    font-size: 19px;
+    margin-bottom: 14px;
+    color: #ffffff;
+    line-height: 1.5;
+}
+.philosophy-card p {
+    color: #8495a7;
+    font-size: 15px;
+    line-height: 1.9;
+}
+/* 总结 */
+.summary {
+    margin-top: 45px;
+    text-align: center;
+    padding: 35px 25px;
+    border-radius: 20px;
+    background: rgba(79,220,255,.06);
+    border: 1px solid rgba(79,220,255,.25);
+}
+.summary p {
+    color: #a9b8c7;
+    font-size: 17px;
+    line-height: 2;
+}
+.summary strong {
     color: #4fdcff;
 }
 /* 联系 */
@@ -280,6 +344,68 @@ section {
 .contact-email:hover {
     transform: translateY(-4px);
     box-shadow: 0 10px 30px rgba(79,220,255,.35);
+}
+/* 二维码弹窗 */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(5,9,18,.85);
+    backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+}
+.modal.show {
+    display: flex;
+}
+.modal-box {
+    position: relative;
+    max-width: 360px;
+    width: 100%;
+    padding: 40px 30px 30px;
+    border-radius: 24px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.09),
+            rgba(255,255,255,.03)
+        );
+    border: 1px solid rgba(79,220,255,.35);
+    box-shadow: 0 25px 70px rgba(0,150,255,.2);
+    text-align: center;
+    animation: popIn .3s ease;
+}
+@keyframes popIn {
+    from { transform: scale(.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+.modal-box img {
+    width: 100%;
+    border-radius: 14px;
+    background: #fff;
+    display: block;
+}
+.modal-box h3 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #4fdcff;
+}
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 26px;
+    line-height: 1;
+    color: #8495a7;
+    cursor: pointer;
+    transition: .3s;
+    background: none;
+    border: none;
+}
+.modal-close:hover {
+    color: #4fdcff;
 }
 /* 页脚 */
 footer {
@@ -334,6 +460,7 @@ footer a:hover {
     <div>
         <a href="#about">关于</a>
         <a href="#platforms">平台</a>
+        <a href="#philosophy">理念</a>
         <a href="#contact">联系</a>
     </div>
 </nav>
@@ -385,14 +512,17 @@ footer a:hover {
             text-align:center;
         ">
             <strong>冯言冯语听冯说</strong>
-            是一个科学科普项目。
+            是一个专注于科学科普的内容项目。
             <br><br>
-            这里关注自然科学、科学史、
-            科学发现以及科学思维。
+            这里关注自然科学、科学史与科学发现，
+            也探讨科学思维本身。
             <br>
-            希望把复杂的科学知识讲清楚，
-            也希望让更多人保持好奇，
-            尊重证据，独立思考。
+            我们希望把复杂的知识讲清楚，
+            让更多人保持好奇、尊重证据、独立思考。
+            <br><br>
+            <span style="color:#4fdcff;font-weight:600;">
+                用科学看世界，用思考辨真伪。
+            </span>
         </p>
     </div>
 </section>
@@ -405,7 +535,7 @@ footer a:hover {
         Find Feng Talks Science
     </p>
     <div class="platforms">
-        <div class="card">
+        <div class="card" onclick="openModal('wechat')">
             <div class="icon">💬</div>
             <h3>微信公众号</h3>
             <p>
@@ -413,7 +543,7 @@ footer a:hover {
                 科普故事与科学思考。
             </p>
         </div>
-        <div class="card">
+        <div class="card" onclick="openModal('video')">
             <div class="icon">🎬</div>
             <h3>视频号</h3>
             <p>
@@ -438,15 +568,6 @@ footer a:hover {
                 in English.
             </p>
         </a>
-        <div class="card">
-            <div class="icon"></div>
-            <h3>Apple Podcasts</h3>
-            <p>
-                Listen to
-                <strong>Feng Talks Science</strong>
-                wherever you go.
-            </p>
-        </div>
     </div>
 </section>
 <!-- 科学理念 -->
@@ -458,6 +579,59 @@ footer a:hover {
         用科学思维认识世界。
     </div>
 </div>
+<!-- 理念 -->
+<section id="philosophy">
+    <h2 class="section-title">
+        理念
+    </h2>
+    <p class="section-subtitle">
+        Philosophy of Feng Talks Science
+    </p>
+    <div class="philosophy">
+        <div class="philosophy-card">
+            <span class="philosophy-num">01</span>
+            <h3>内容方式：把硬核知识“翻译”成人话</h3>
+            <p>
+                不照本宣科，用通俗语言和接地气的类比，
+                把复杂现象讲成容易理解的故事，
+                让科学不再高高在上。
+            </p>
+        </div>
+        <div class="philosophy-card">
+            <span class="philosophy-num">02</span>
+            <h3>核心目标：培养独立思考，而非灌输答案</h3>
+            <p>
+                科学不是标准答案，而是一套方法。
+                公众号只做一件事——带你走一遍寻求答案的路，
+                不把答案直接塞给你。
+            </p>
+        </div>
+        <div class="philosophy-card">
+            <span class="philosophy-num">03</span>
+            <h3>价值立场：用理性对抗伪科学和阴谋论</h3>
+            <p>
+                科普是国家的“底层免疫力”。
+                伪科学最害人的不是“错”，而是“堵”——
+                让人停止追问；阴谋论则让人只信“自己猜的”。
+                坚持辟谣，是为了让更多人相信真相经得起追问。
+            </p>
+        </div>
+        <div class="philosophy-card">
+            <span class="philosophy-num">04</span>
+            <h3>最终定位：一个真诚交流的自留地</h3>
+            <p>
+                不仅是科普阵地，更是像老朋友聊天一样的交流空间，
+                用好奇心和理性对抗信息时代的喧嚣与误导。
+            </p>
+        </div>
+    </div>
+    <div class="summary">
+        <p>
+            这是一个以<strong>“展示寻求答案的过程”</strong>为核心，
+            用通俗方式培养独立思考、对抗伪科学的科普公众号。
+        </p>
+    </div>
+</section>
 <!-- 联系 -->
 <section id="contact">
     <h2 class="section-title">
@@ -475,6 +649,14 @@ footer a:hover {
         </a>
     </div>
 </section>
+<!-- 二维码弹窗 -->
+<div class="modal" id="modal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h3 id="modalTitle"></h3>
+        <img id="modalImg" src="" alt="二维码">
+    </div>
+</div>
 <!-- 页脚 -->
 <footer>
     <div class="footer-slogan">
@@ -490,8 +672,9 @@ footer a:hover {
     <br><br>
     © 2026 Feng Science
 </footer>
-<!-- 星空生成 -->
+<!-- 星空生成 + 弹窗逻辑 -->
 <script>
+/* 星空 */
 const stars = document.getElementById("stars");
 for (let i = 0; i < 120; i++) {
     const star = document.createElement("div");
@@ -504,6 +687,46 @@ for (let i = 0; i < 120; i++) {
         Math.random();
     stars.appendChild(star);
 }
+
+/* 二维码弹窗 */
+const modalData = {
+    wechat: {
+        title: "微信公众号",
+        img: "wechat.png"
+    },
+    video: {
+        title: "视频号",
+        img: "video.png"
+    }
+};
+
+const modal = document.getElementById("modal");
+const modalTitle = document.getElementById("modalTitle");
+const modalImg = document.getElementById("modalImg");
+
+function openModal(type) {
+    const data = modalData[type];
+    modalTitle.textContent = data.title;
+    modalImg.src = data.img;
+    modalImg.alt = data.title + "二维码";
+    modal.classList.add("show");
+}
+
+function closeModal() {
+    modal.classList.remove("show");
+}
+
+/* 点击遮罩或按 ESC 关闭 */
+modal.addEventListener("click", function (e) {
+    if (e.target === modal) {
+        closeModal();
+    }
+});
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        closeModal();
+    }
+});
 </script>
 </body>
 </html>
