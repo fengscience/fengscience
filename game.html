@@ -203,14 +203,12 @@ canvas{display:block;width:100%;height:100%;background:#e8dcc8;border-radius:8px
 <script>
 var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
-/* ========== 角色 ========== */
 var CHARS=[
   {id:'wu',name:'小物',icon:'🔧',desc:'沉稳·物理',color:'#d4a017',bonus:'勘察时额外显示1条物理线索',subject:'物理',passive:'extraClue'},
   {id:'hua',name:'小化',icon:'🧪',desc:'好奇·化学',color:'#7a9a3a',bonus:'选错工具箱不扣精力',subject:'化学',passive:'noEnergyLoss'},
   {id:'sheng',name:'小生',icon:'🌿',desc:'温和·生物',color:'#3a9a6a',bonus:'完成订单30%概率额外掉落通用碎片',subject:'生物',passive:'bonusFrag'}
 ];
 
-/* ========== 地图（逐关解锁，order 决定顺序） ========== */
 var MAPS=[
   {id:'lab',     name:'学校实验室', sub:'物理+化学+生物', icon:'🧫', desc:'电路、指示剂、显微镜', unlock:true,  order:1},
   {id:'factory', name:'铁锈工厂',   sub:'物理+化学',       icon:'🏭', desc:'管道泄漏、电路过载、金属腐蚀', unlock:false, order:2},
@@ -219,269 +217,144 @@ var MAPS=[
   {id:'watch',   name:'老城修表铺', sub:'物理·精密',       icon:'⌚', desc:'齿轮卡死、表镜起雾、发条断裂', unlock:false, order:5}
 ];
 
-/* ========== 订单 ========== */
-/* clues 现在为 {text, valid} 数组，valid:false 为干扰项 */
 var ORDERS={
-  /* ---------- 学校实验室（新手图） ---------- */
   l1:{id:'l1',map:'lab',title:'小灯泡不亮',type:'main',
-    clues:[
-      {text:'灯泡玻璃发黑',valid:true},
-      {text:'电池装反了',valid:true},
-      {text:'开关接触不良',valid:true},
-      {text:'今天教室换了新窗帘',valid:false}
-    ],
+    clues:[{text:'灯泡玻璃发黑',valid:true},{text:'电池装反了',valid:true},{text:'开关接触不良',valid:true},{text:'今天教室换了新窗帘',valid:false}],
     tools:['物理箱（查电路）','化学箱（查成分）','生物箱（查微生物）'],
     fixTool:'物理箱（查电路）',fixKey:'物理',
     fixDesc:'你检查电路，发现电池装反、开关氧化。重新接好，灯泡亮了。',
-    quiz:[
-      {q:'灯泡发黑通常说明？',opts:['灯丝烧过','玻璃脏了','灯泡开心'],ans:0,hint:'灯丝高温蒸发后附着在玻璃上。'},
-      {q:'电路要亮，必须？',opts:['形成闭合回路','有磁铁','有颜色'],ans:0,hint:'断路不亮，闭路才通。'}
-    ],
+    quiz:[{q:'灯泡发黑通常说明？',opts:['灯丝烧过','玻璃脏了','灯泡开心'],ans:0,hint:'灯丝高温蒸发后附着在玻璃上。'},{q:'电路要亮，必须？',opts:['形成闭合回路','有磁铁','有颜色'],ans:0,hint:'断路不亮，闭路才通。'}],
     note:{title:'灯泡为什么会发黑',body:'灯丝高温下钨原子蒸发，附着在玻璃内壁，所以旧灯泡会发黑。',cold:'冷知识：白炽灯只有约5%能量变成光，其余都是热。'},
     frag:{id:'frag_phys_l1',name:'物理·电路碎片',icon:'💡'}},
 
   l2:{id:'l2',map:'lab',title:'指示剂变色',type:'main',
-    clues:[
-      {text:'溶液滴入紫色石蕊变红',valid:true},
-      {text:'老师说是酸',valid:true},
-      {text:'杯子是新的',valid:false}
-    ],
+    clues:[{text:'溶液滴入紫色石蕊变红',valid:true},{text:'老师说是酸',valid:true},{text:'杯子是新的',valid:false}],
     tools:['化学箱（测酸碱）','物理箱（测密度）','生物箱（查微生物）'],
     fixTool:'化学箱（测酸碱）',fixKey:'化学',
     fixDesc:'你用石蕊试纸确认溶液呈酸性，正确记录了 pH。',
-    quiz:[
-      {q:'石蕊遇酸变什么色？',opts:['红色','蓝色','绿色'],ans:0,hint:'酸红碱蓝。'},
-      {q:'pH 小于 7 说明？',opts:['酸性','碱性','中性'],ans:0,hint:'7 是中性。'}
-    ],
+    quiz:[{q:'石蕊遇酸变什么色？',opts:['红色','蓝色','绿色'],ans:0,hint:'酸红碱蓝。'},{q:'pH 小于 7 说明？',opts:['酸性','碱性','中性'],ans:0,hint:'7 是中性。'}],
     note:{title:'石蕊为什么能测酸碱',body:'石蕊是一种天然指示剂，遇酸变红、遇碱变蓝，可粗略判断溶液酸碱性。',cold:'冷知识：紫甘蓝汁也能当酸碱指示剂。'},
     frag:{id:'frag_chem_l2',name:'化学·酸碱碎片',icon:'🧪'}},
 
   l3:{id:'l3',map:'lab',title:'显微镜下的秘密',type:'main',
-    clues:[
-      {text:'装片里有一群会动的小点',valid:true},
-      {text:'放大倍数调到 400 倍',valid:true},
-      {text:'实验室刚拖过地',valid:false}
-    ],
+    clues:[{text:'装片里有一群会动的小点',valid:true},{text:'放大倍数调到 400 倍',valid:true},{text:'实验室刚拖过地',valid:false}],
     tools:['生物箱（查微生物）','化学箱（测成分）','物理箱（测光路）'],
     fixTool:'生物箱（查微生物）',fixKey:'生物',
     fixDesc:'你认出这是草履虫，记录了它的运动方式。',
-    quiz:[
-      {q:'草履虫靠什么运动？',opts:['纤毛','翅膀','轮子'],ans:0,hint:'身体表面布满纤毛。'},
-      {q:'显微镜放大倍数怎么算？',opts:['目镜×物镜','目镜+物镜','只看物镜'],ans:0,hint:'两个镜头倍数相乘。'}
-    ],
+    quiz:[{q:'草履虫靠什么运动？',opts:['纤毛','翅膀','轮子'],ans:0,hint:'身体表面布满纤毛。'},{q:'显微镜放大倍数怎么算？',opts:['目镜×物镜','目镜+物镜','只看物镜'],ans:0,hint:'两个镜头倍数相乘。'}],
     note:{title:'显微镜下的世界',body:'显微镜把微小物体放大，让我们看到肉眼看不见的细胞和微生物。',cold:'冷知识：列文虎克用自制显微镜第一次看到了细菌。'},
     frag:{id:'frag_bio_l3',name:'生物·显微碎片',icon:'🔬'}},
 
-  /* ---------- 铁锈工厂 ---------- */
   f1:{id:'f1',map:'factory',title:'管道冻裂',type:'main',
-    clues:[
-      {text:'管道外壁结霜',valid:true},
-      {text:'最近气温骤降',valid:true},
-      {text:'管内是水不是防冻液',valid:true},
-      {text:'厂长昨天吃了火锅',valid:false}
-    ],
+    clues:[{text:'管道外壁结霜',valid:true},{text:'最近气温骤降',valid:true},{text:'管内是水不是防冻液',valid:true},{text:'厂长昨天吃了火锅',valid:false}],
     tools:['物理箱（测压强）','化学箱（测成分）','生物箱（查微生物）'],
     fixTool:'物理箱（测压强）',fixKey:'物理',
     fixDesc:'你给管道加保温层、换防冻液——水结冰体积膨胀约9%，这是冻裂的元凶。',
-    quiz:[
-      {q:'水结冰后体积会怎样？',opts:['变小','不变','变大'],ans:2,hint:'冰能浮在水面，说明同质量体积更大。'},
-      {q:'为什么水管冬天容易裂？',opts:['水结冰膨胀撑裂','铁变脆了','水压变小'],ans:0,hint:'冰的密度比水小。'}
-    ],
+    quiz:[{q:'水结冰后体积会怎样？',opts:['变小','不变','变大'],ans:2,hint:'冰能浮在水面，说明同质量体积更大。'},{q:'为什么水管冬天容易裂？',opts:['水结冰膨胀撑裂','铁变脆了','水压变小'],ans:0,hint:'冰的密度比水小。'}],
     note:{title:'水为什么会“撑破”管子',body:'水结冰时分子排列成六角形晶体，体积反而膨胀约9%。管道里的水结冰，硬把管子撑裂。',cold:'冷知识：冰的密度约0.9g/cm³，所以冰山能浮在水上。'},
     frag:{id:'frag_phys_1',name:'物理·管道碎片',icon:'🔩'}},
 
   f2:{id:'f2',map:'factory',title:'电路过载起火',type:'main',
-    clues:[
-      {text:'保险丝熔断',valid:true},
-      {text:'电线发热有焦味',valid:true},
-      {text:'同时开了太多大功率设备',valid:true},
-      {text:'车间换了新地砖',valid:false}
-    ],
+    clues:[{text:'保险丝熔断',valid:true},{text:'电线发热有焦味',valid:true},{text:'同时开了太多大功率设备',valid:true},{text:'车间换了新地砖',valid:false}],
     tools:['物理箱（查电流）','化学箱（查燃烧）','生物箱（查微生物）'],
     fixTool:'物理箱（查电流）',fixKey:'物理',
     fixDesc:'你算出总功率超载，换了合适保险丝并建议错峰用电。',
-    quiz:[
-      {q:'电线发热和什么有关？',opts:['电流大小','颜色','长度'],ans:0,hint:'焦耳定律 Q=I²Rt。'},
-      {q:'保险丝为什么能防火灾？',opts:['它很贵','电流过大时先熔断','它会发光'],ans:1,hint:'保险丝是牺牲自己的保护装置。'}
-    ],
+    quiz:[{q:'电线发热和什么有关？',opts:['电流大小','颜色','长度'],ans:0,hint:'焦耳定律 Q=I²Rt。'},{q:'保险丝为什么能防火灾？',opts:['它很贵','电流过大时先熔断','它会发光'],ans:1,hint:'保险丝是牺牲自己的保护装置。'}],
     note:{title:'保险丝为什么能救命',body:'电流通过导体发热，功率越大发热越多。保险丝熔点低，电流过大时先熔断，切断电路。',cold:'冷知识：焦耳定律 Q=I²Rt 是电热毯、电饭锅的工作原理。'},
     frag:{id:'frag_phys_2',name:'物理·电路碎片',icon:'⚡'}},
 
   f3:{id:'f3',map:'factory',title:'铁架腐蚀',type:'main',
-    clues:[
-      {text:'铁架表面红褐色',valid:true},
-      {text:'车间潮湿',valid:true},
-      {text:'附近有酸性废水',valid:true},
-      {text:'工人换了新工服',valid:false}
-    ],
+    clues:[{text:'铁架表面红褐色',valid:true},{text:'车间潮湿',valid:true},{text:'附近有酸性废水',valid:true},{text:'工人换了新工服',valid:false}],
     tools:['化学箱（测酸碱）','物理箱（测受力）','生物箱（查微生物）'],
     fixTool:'化学箱（测酸碱）',fixKey:'化学',
     fixDesc:'你测出酸性环境加速腐蚀，除锈后涂防锈漆。',
-    quiz:[
-      {q:'铁锈的主要成分是？',opts:['三氧化二铁','碳酸钙','氯化钠'],ans:0,hint:'铁锈是红褐色的，含铁和氧。'},
-      {q:'什么环境会加速铁生锈？',opts:['干燥','潮湿+酸性','真空'],ans:1,hint:'水和酸都在帮铁氧化。'}
-    ],
+    quiz:[{q:'铁锈的主要成分是？',opts:['三氧化二铁','碳酸钙','氯化钠'],ans:0,hint:'铁锈是红褐色的，含铁和氧。'},{q:'什么环境会加速铁生锈？',opts:['干燥','潮湿+酸性','真空'],ans:1,hint:'水和酸都在帮铁氧化。'}],
     note:{title:'铁为什么会锈',body:'铁和空气中的氧气、水反应生成三氧化二铁。潮湿、酸性环境会加速这个过程。',cold:'冷知识：火星表面红色也是三氧化二铁。'},
     frag:{id:'frag_chem_1',name:'化学·腐蚀碎片',icon:'🧪'}},
 
   f4:{id:'f4',map:'factory',title:'老工人的秘密',type:'side',
-    clues:[
-      {text:'仓库角落有旧日记',valid:true},
-      {text:'日记提到“那年管道爆过”',valid:true},
-      {text:'墙上有一张旧照片',valid:true},
-      {text:'门口猫在晒太阳',valid:false}
-    ],
+    clues:[{text:'仓库角落有旧日记',valid:true},{text:'日记提到“那年管道爆过”',valid:true},{text:'墙上有一张旧照片',valid:true},{text:'门口猫在晒太阳',valid:false}],
     tools:['化学箱（测残留）','物理箱（查结构）','生物箱（查霉菌）'],
     fixTool:'化学箱（测残留）',fixKey:'化学',
     fixDesc:'你发现旧管道残留酸性物质，提醒厂长做全面检测。',
-    quiz:[
-      {q:'旧管道残留酸性物质说明什么？',opts:['曾经输送过酸','管道很干净','管道是新的'],ans:0,hint:'残留物是历史的证据。'}
-    ],
+    quiz:[{q:'旧管道残留酸性物质说明什么？',opts:['曾经输送过酸','管道很干净','管道是新的'],ans:0,hint:'残留物是历史的证据。'}],
     note:{title:'从残留物读历史',body:'管道内壁的残留物能告诉我们它输送过什么。酸性残留会持续腐蚀管壁。',cold:'冷知识：考古学家也靠残留物分析古代容器装过什么。'},
     frag:{id:'frag_chem_2',name:'化学·残留碎片',icon:'🔬'}},
 
-  /* ---------- 绿野生态园 ---------- */
   p1:{id:'p1',map:'park',title:'水华爆发',type:'main',
-    clues:[
-      {text:'水面绿色浮沫',valid:true},
-      {text:'上游有养鸡场',valid:true},
-      {text:'鱼浮头呼吸',valid:true},
-      {text:'今天游客很多',valid:false}
-    ],
+    clues:[{text:'水面绿色浮沫',valid:true},{text:'上游有养鸡场',valid:true},{text:'鱼浮头呼吸',valid:true},{text:'今天游客很多',valid:false}],
     tools:['生物箱（查藻类）','化学箱（测水质）','物理箱（测流速）'],
     fixTool:'生物箱（查藻类）',fixKey:'生物',
     fixDesc:'你用显微镜发现藻类爆发，引流换水、种水草控藻。',
-    quiz:[
-      {q:'水华爆发最可能的原因？',opts:['氮磷过多','水太干净','水温太低'],ans:0,hint:'养鸡场粪水带来氮和磷。'},
-      {q:'鱼为什么浮头？',opts:['藻类夜里耗氧','鱼想晒太阳','水太甜'],ans:0,hint:'藻类夜里呼吸耗氧。'}
-    ],
+    quiz:[{q:'水华爆发最可能的原因？',opts:['氮磷过多','水太干净','水温太低'],ans:0,hint:'养鸡场粪水带来氮和磷。'},{q:'鱼为什么浮头？',opts:['藻类夜里耗氧','鱼想晒太阳','水太甜'],ans:0,hint:'藻类夜里呼吸耗氧。'}],
     note:{title:'水为什么会“富”',body:'氮、磷流入水体，藻类疯长，夜里耗氧，鱼缺氧浮头。这叫水体富营养化。',cold:'冷知识：太湖、滇池都发生过严重富营养化。'},
     frag:{id:'frag_bio_1',name:'生物·水体碎片',icon:'🌿'}},
 
   p2:{id:'p2',map:'park',title:'外来鱼入侵',type:'main',
-    clues:[
-      {text:'池塘出现陌生鱼种',valid:true},
-      {text:'本地小鱼变少',valid:true},
-      {text:'有人放生过宠物鱼',valid:true},
-      {text:'公园新开了奶茶店',valid:false}
-    ],
+    clues:[{text:'池塘出现陌生鱼种',valid:true},{text:'本地小鱼变少',valid:true},{text:'有人放生过宠物鱼',valid:true},{text:'公园新开了奶茶店',valid:false}],
     tools:['生物箱（查食物链）','化学箱（测水质）','物理箱（测水温）'],
     fixTool:'生物箱（查食物链）',fixKey:'生物',
     fixDesc:'你识别出外来鱼缺乏天敌，建议捕捞隔离。',
-    quiz:[
-      {q:'外来物种为什么容易泛滥？',opts:['缺乏天敌','长得好看','会说话'],ans:0,hint:'在新环境里没有天敌制约。'},
-      {q:'放生宠物鱼可能造成？',opts:['生态入侵','水质变好','鱼更开心'],ans:0,hint:'“放生”有时是生态灾难的开始。'}
-    ],
+    quiz:[{q:'外来物种为什么容易泛滥？',opts:['缺乏天敌','长得好看','会说话'],ans:0,hint:'在新环境里没有天敌制约。'},{q:'放生宠物鱼可能造成？',opts:['生态入侵','水质变好','鱼更开心'],ans:0,hint:'“放生”有时是生态灾难的开始。'}],
     note:{title:'放生为什么可能是灾难',body:'外来物种进入新环境，若缺乏天敌，会大量繁殖、挤占本地物种生存空间。',cold:'冷知识：福寿螺、水葫芦都是外来入侵物种。'},
     frag:{id:'frag_bio_2',name:'生物·生态碎片',icon:'🐟'}},
 
   p3:{id:'p3',map:'park',title:'候鸟迷路',type:'side',
-    clues:[
-      {text:'候鸟盘旋不落',valid:true},
-      {text:'附近新装了强光广告牌',valid:true},
-      {text:'往年这时早该南飞',valid:true},
-      {text:'公园票价涨了',valid:false}
-    ],
+    clues:[{text:'候鸟盘旋不落',valid:true},{text:'附近新装了强光广告牌',valid:true},{text:'往年这时早该南飞',valid:true},{text:'公园票价涨了',valid:false}],
     tools:['生物箱（查迁徙）','物理箱（查光污染）','化学箱（测空气）'],
     fixTool:'生物箱（查迁徙）',fixKey:'生物',
     fixDesc:'你判断强光干扰了候鸟的导航，建议夜间调暗灯光。',
-    quiz:[
-      {q:'候鸟靠什么导航？',opts:['地磁和星光','看路牌','问路人'],ans:0,hint:'鸟类能感知地磁场。'},
-      {q:'强光为什么让候鸟迷路？',opts:['干扰导航','太热了','太亮了'],ans:0,hint:'人造光会骗过导航系统。'}
-    ],
+    quiz:[{q:'候鸟靠什么导航？',opts:['地磁和星光','看路牌','问路人'],ans:0,hint:'鸟类能感知地磁场。'},{q:'强光为什么让候鸟迷路？',opts:['干扰导航','太热了','太亮了'],ans:0,hint:'人造光会骗过导航系统。'}],
     note:{title:'候鸟的“GPS”',body:'候鸟能感知地球磁场，也靠星光校准方向。城市强光会干扰这套系统。',cold:'冷知识：有些鸟能“看见”磁场。'},
     frag:{id:'frag_bio_3',name:'生物·迁徙碎片',icon:'🕊️'}},
 
-  /* ---------- 白塔医院 ---------- */
   h1:{id:'h1',map:'hospital',title:'疫苗冷链断',type:'main',
-    clues:[
-      {text:'冷藏柜温度记录中断',valid:true},
-      {text:'部分疫苗瓶身结冰',valid:true},
-      {text:'护士说停电过',valid:true},
-      {text:'候诊室换了新椅子',valid:false}
-    ],
+    clues:[{text:'冷藏柜温度记录中断',valid:true},{text:'部分疫苗瓶身结冰',valid:true},{text:'护士说停电过',valid:true},{text:'候诊室换了新椅子',valid:false}],
     tools:['生物箱（查疫苗）','化学箱（测温度）','物理箱（查制冷）'],
     fixTool:'生物箱（查疫苗）',fixKey:'生物',
     fixDesc:'你判断疫苗可能失效，建议报废并建立温度监控。',
-    quiz:[
-      {q:'疫苗为什么要冷链？',opts:['蛋白质怕热会变性','怕光','怕吵'],ans:0,hint:'疫苗里的蛋白质高温会变形失效。'},
-      {q:'结冰的疫苗还能用吗？',opts:['不能，可能已失效','能，冰一下更好','能，加热就行'],ans:0,hint:'反复冻融会破坏疫苗结构。'}
-    ],
+    quiz:[{q:'疫苗为什么要冷链？',opts:['蛋白质怕热会变性','怕光','怕吵'],ans:0,hint:'疫苗里的蛋白质高温会变形失效。'},{q:'结冰的疫苗还能用吗？',opts:['不能，可能已失效','能，冰一下更好','能，加热就行'],ans:0,hint:'反复冻融会破坏疫苗结构。'}],
     note:{title:'疫苗为什么怕热',body:'疫苗里的抗原多是蛋白质，高温会让蛋白质变性，且不可逆。',cold:'冷知识：蛋白质变性就像鸡蛋煮熟，回不去了。'},
     frag:{id:'frag_bio_4',name:'生物·免疫碎片',icon:'💉'}},
 
   h2:{id:'h2',map:'hospital',title:'消毒液配比错',type:'main',
-    clues:[
-      {text:'消毒液气味刺鼻',valid:true},
-      {text:'保洁员说“多加点更干净”',valid:true},
-      {text:'地面有腐蚀痕迹',valid:true},
-      {text:'走廊挂了新画',valid:false}
-    ],
+    clues:[{text:'消毒液气味刺鼻',valid:true},{text:'保洁员说“多加点更干净”',valid:true},{text:'地面有腐蚀痕迹',valid:true},{text:'走廊挂了新画',valid:false}],
     tools:['化学箱（测浓度）','生物箱（查细菌）','物理箱（查温度）'],
     fixTool:'化学箱（测浓度）',fixKey:'化学',
     fixDesc:'你测出浓度过高，稀释到标准比例。',
-    quiz:[
-      {q:'消毒液越浓越好吗？',opts:['不是，要按比例','是，越浓越干净','无所谓'],ans:0,hint:'浓度过高会腐蚀、伤人。'},
-      {q:'84消毒液主要成分是？',opts:['次氯酸钠','食盐','白糖'],ans:0,hint:'次氯酸钠，靠氧化杀灭微生物。'}
-    ],
+    quiz:[{q:'消毒液越浓越好吗？',opts:['不是，要按比例','是，越浓越干净','无所谓'],ans:0,hint:'浓度过高会腐蚀、伤人。'},{q:'84消毒液主要成分是？',opts:['次氯酸钠','食盐','白糖'],ans:0,hint:'次氯酸钠，靠氧化杀灭微生物。'}],
     note:{title:'消毒液不是越浓越好',body:'消毒液靠有效成分杀灭微生物，但浓度过高会腐蚀物体、刺激皮肤，必须按标准比例稀释。',cold:'冷知识：84消毒液和洁厕灵混用会产生有毒氯气！'},
     frag:{id:'frag_chem_3',name:'化学·消毒碎片',icon:'🧴'}},
 
   h3:{id:'h3',map:'hospital',title:'耐药菌危机',type:'side',
-    clues:[
-      {text:'病人用了很久抗生素',valid:true},
-      {text:'细菌培养皿出现耐药菌落',valid:true},
-      {text:'医生皱眉',valid:true},
-      {text:'食堂换了菜单',valid:false}
-    ],
+    clues:[{text:'病人用了很久抗生素',valid:true},{text:'细菌培养皿出现耐药菌落',valid:true},{text:'医生皱眉',valid:true},{text:'食堂换了菜单',valid:false}],
     tools:['生物箱（查耐药）','化学箱（查药物）','物理箱（查灭菌）'],
     fixTool:'生物箱（查耐药）',fixKey:'生物',
     fixDesc:'你判断是抗生素滥用导致耐药菌，建议按疗程用药。',
-    quiz:[
-      {q:'耐药菌是怎么产生的？',opts:['自然选择','细菌变聪明了','抗生素过期'],ans:0,hint:'抗生素杀死敏感菌，耐药菌活下来。'},
-      {q:'为什么不能滥用抗生素？',opts:['会筛选出耐药菌','太贵了','味道不好'],ans:0,hint:'滥用等于帮耐药菌训练。'}
-    ],
+    quiz:[{q:'耐药菌是怎么产生的？',opts:['自然选择','细菌变聪明了','抗生素过期'],ans:0,hint:'抗生素杀死敏感菌，耐药菌活下来。'},{q:'为什么不能滥用抗生素？',opts:['会筛选出耐药菌','太贵了','味道不好'],ans:0,hint:'滥用等于帮耐药菌训练。'}],
     note:{title:'细菌为什么越来越“强”',body:'抗生素杀死敏感细菌，少数耐药菌存活并繁殖，久而久之整个菌群都耐药。',cold:'冷知识：青霉素刚发现时几乎万能，现在很多细菌已耐药。'},
     frag:{id:'frag_bio_5',name:'生物·耐药碎片',icon:'🦠'}},
 
-  /* ---------- 老城修表铺（多步骤） ---------- */
   w1:{id:'w1',map:'watch',title:'齿轮卡死',type:'main',
-    clues:[
-      {text:'齿轮咬合处有黑色油泥',valid:true},
-      {text:'表停走前走时变慢',valid:true},
-      {text:'表主最近摔过一次',valid:true},
-      {text:'表带是新换的',valid:false}
-    ],
+    clues:[{text:'齿轮咬合处有黑色油泥',valid:true},{text:'表停走前走时变慢',valid:true},{text:'表主最近摔过一次',valid:true},{text:'表带是新换的',valid:false}],
     tools:['物理箱（查传动）','化学箱（洗油泥）','生物箱（查霉菌）'],
     fixTool:'物理箱（查传动）',fixKey:'物理',
     fixDesc:'你拆开表壳，发现齿轮被油泥卡住。清洗后重新装配，表又走了。',
     steps:['拆解表壳','清洗齿轮','重新装配'],
-    quiz:[
-      {q:'齿轮传动中，齿数少的齿轮？',opts:['转得快','转得慢','不转'],ans:0,hint:'齿数少，同样时间转的圈数多。'},
-      {q:'表走时变慢可能因为？',opts:['齿轮受阻','表带太新','表盘太大'],ans:0,hint:'阻力让传动效率下降。'}
-    ],
+    quiz:[{q:'齿轮传动中，齿数少的齿轮？',opts:['转得快','转得慢','不转'],ans:0,hint:'齿数少，同样时间转的圈数多。'},{q:'表走时变慢可能因为？',opts:['齿轮受阻','表带太新','表盘太大'],ans:0,hint:'阻力让传动效率下降。'}],
     note:{title:'齿轮比与走时',body:'齿轮传动比由齿数决定。齿数少的齿轮转得快，齿数多的转得慢，配合起来才能精确走时。',cold:'冷知识：机械表里最小的齿轮每分钟转好几圈。'},
     frag:{id:'frag_phys_w1',name:'物理·传动碎片',icon:'⚙️'}},
 
   w2:{id:'w2',map:'watch',title:'表镜起雾',type:'main',
-    clues:[
-      {text:'表镜内侧有小水珠',valid:true},
-      {text:'表主戴着洗过热水澡',valid:true},
-      {text:'密封圈老化',valid:true},
-      {text:'表盒是木头的',valid:false}
-    ],
+    clues:[{text:'表镜内侧有小水珠',valid:true},{text:'表主戴着洗过热水澡',valid:true},{text:'密封圈老化',valid:true},{text:'表盒是木头的',valid:false}],
     tools:['物理箱（查密封）','化学箱（查水汽）','生物箱（查霉菌）'],
     fixTool:'物理箱（查密封）',fixKey:'物理',
     fixDesc:'你更换密封圈并烘干表内水汽，雾气消失了。',
-    quiz:[
-      {q:'表镜起雾说明？',opts:['水汽进入表内','表镜太亮','表针太细'],ans:0,hint:'温差让水汽凝结在冷的内壁。'},
-      {q:'密封圈的作用是？',opts:['防水防尘','装饰','让表变重'],ans:0,hint:'密封圈堵住缝隙。'}
-    ],
+    quiz:[{q:'表镜起雾说明？',opts:['水汽进入表内','表镜太亮','表针太细'],ans:0,hint:'温差让水汽凝结在冷的内壁。'},{q:'密封圈的作用是？',opts:['防水防尘','装饰','让表变重'],ans:0,hint:'密封圈堵住缝隙。'}],
     note:{title:'温差与凝露',body:'热的水汽遇到冷的表镜，会凝结成小水珠。密封圈老化后，水汽更容易进入表内。',cold:'冷知识：冬天戴眼镜进门起雾，是同一个原理。'},
     frag:{id:'frag_phys_w2',name:'物理·密封碎片',icon:'💧'}}
 };
 
-/* ========== 声望等级 ========== */
 var RANKS=[
   {min:0,name:'学徒修理工',icon:'🔧'},
   {min:30,name:'熟练工匠',icon:'⚙️'},
@@ -489,7 +362,6 @@ var RANKS=[
   {min:100,name:'万物通',icon:'🌟'}
 ];
 
-/* ========== 成就 ========== */
 var ACHIEVEMENTS=[
   {id:'first_order',icon:'🎯',name:'初出茅庐',desc:'完成第一个订单'},
   {id:'lab_all',icon:'🧫',name:'实验室之星',desc:'完成学校实验室所有主线'},
@@ -505,7 +377,6 @@ var ACHIEVEMENTS=[
   {id:'no_wrong',icon:'💯',name:'零失误',desc:'不选错工具箱完成一个订单'}
 ];
 
-/* ========== 状态 ========== */
 var state={
   reputation:0,fragments:[],notes:[],completedOrders:[],char:null,map:null,
   stars:{},energy:5,maxEnergy:5,achievements:[],orderErrors:{}
@@ -514,7 +385,6 @@ var paused=false;
 var quizResetTimer=null;
 var lastTime=0;
 
-/* ========== 存档 ========== */
 var SAVE_KEY='wanwu_save_v3';
 function saveGame(){
   try{
@@ -546,7 +416,6 @@ function loadGame(){
     state.maxEnergy=d.maxEnergy||5;
     state.achievements=d.achievements||[];
     state.orderErrors=d.orderErrors||{};
-    // 恢复解锁：优先按存档，其次按"完成主线"重新推导
     if(d.mapUnlocks&&d.mapUnlocks.length===MAPS.length){
       for(var i=0;i<MAPS.length;i++)MAPS[i].unlock=!!d.mapUnlocks[i];
     }else{
@@ -564,7 +433,6 @@ function loadGame(){
 function hasSave(){try{return !!localStorage.getItem(SAVE_KEY);}catch(e){return false;}}
 function clearSave(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}}
 
-/* 根据完成情况重新推导解锁（逐关） */
 function recomputeUnlocks(){
   for(var i=0;i<MAPS.length;i++)MAPS[i].unlock=false;
   var sorted=MAPS.slice().sort(function(a,b){return a.order-b.order;});
@@ -574,7 +442,6 @@ function recomputeUnlocks(){
   }
 }
 
-/* ========== 画面 ========== */
 function showScreen(id){
   var ids=['charScreen','mapScreen'];
   for(var i=0;i<ids.length;i++)document.getElementById(ids[i]).classList.remove('show');
@@ -597,7 +464,6 @@ function showScreen(id){
   });
 })();
 
-/* ========== 角色选择 ========== */
 function buildCharScreen(){
   var grid=document.getElementById('charGrid');grid.innerHTML='';
   for(var i=0;i<CHARS.length;i++){
@@ -643,7 +509,6 @@ function continueSave(){
   }
 }
 
-/* ========== 地图选择 ========== */
 function buildMapScreen(){
   recomputeUnlocks();
   var grid=document.getElementById('mapGrid');grid.innerHTML='';
@@ -688,7 +553,6 @@ function getMapProgress(mapId){
   return {done:done,total:total};
 }
 
-/* ========== 游戏 ========== */
 var cv=document.getElementById('cv'),ctx=cv.getContext('2d'),W=800,H=600;
 var player={x:300,y:500,r:14,speed:3.2,dir:1,walkPhase:0};
 var camera={x:0,y:0};
@@ -721,7 +585,6 @@ function backToMap(){
   document.getElementById('tip').style.display='none';
   document.getElementById('tip').classList.remove('show');
   closeOverlay('dlgOverlay');closeOverlay('quizOverlay');closeOverlay('clueOverlay');
-  // 回地图恢复精力（与提示文案一致）
   state.energy=state.maxEnergy;
   saveGame();
   buildMapScreen();showScreen('mapScreen');
@@ -753,7 +616,6 @@ function goHome(){
   showScreen(null);
 }
 
-/* ========== 地图构建 ========== */
 function buildMap(){
   var m=state.map;props=[];npcs=[];
   if(m.id==='lab'){
@@ -819,7 +681,6 @@ function buildMap(){
   }
 }
 
-/* ========== 输入 ========== */
 document.addEventListener('keydown',function(e){
   keys[e.key.toLowerCase()]=true;
   if(e.key.toLowerCase()==='e'&&running&&!paused){var n=findNearestNPC();if(n)talkTo(n);}
@@ -840,7 +701,6 @@ function setKnob(dx,dy){
   knobEl.style.left='calc(50% + '+kx+'px)';knobEl.style.top='calc(50% + '+ky+'px)';
   joy.dx=kx/maxR;joy.dy=ky/maxR;
 }
-/* 摇杆：监听挂在 gameWrap，允许手指移出摇杆继续拖 */
 document.getElementById('gameWrap').addEventListener('touchstart',function(e){
   if(!isTouch||!running)return;
   var r=joyEl.getBoundingClientRect();
@@ -861,7 +721,6 @@ function endJoy(){joy.active=false;joy.dx=0;joy.dy=0;joyId=null;setKnob(0,0);}
 document.getElementById('gameWrap').addEventListener('touchend',endJoy);
 document.getElementById('gameWrap').addEventListener('touchcancel',endJoy);
 
-/* ========== 主循环 ========== */
 function loop(t){
   var dt=Math.min(50,t-lastTime)/16.67;lastTime=t;
   update(dt);render();
@@ -918,7 +777,6 @@ function findNearestNPC(){
 }
 function distTo(x,y){return Math.sqrt((x-player.x)*(x-player.x)+(y-player.y)*(y-player.y));}
 
-/* ========== 渲染 ========== */
 function render(){
   ctx.fillStyle='#e8dcc8';ctx.fillRect(0,0,W,H);
   ctx.save();ctx.translate(-camera.x,0);
@@ -1000,7 +858,6 @@ function tryInteract(wx,wy){
   }
 }
 
-/* ========== 对话 ========== */
 function talkTo(npc){
   var order=ORDERS[npc.orderId];
   if(!order){showDialog(npc.name,npc.idle,[{label:'告辞',fn:closeDialog}]);return;}
@@ -1031,7 +888,6 @@ function showDialog(name,text,buttons){
 }
 function closeDialog(){closeOverlay('dlgOverlay');paused=false;}
 
-/* ========== 订单流程 ==========valid */
 var currentOrder=null,quizIndex=0,quizAnswered=false,currentWrongCount=0;
 var cluePicked=[],clueConfirmed=false;
 
@@ -1041,17 +897,15 @@ function startOrder(orderId){
   openClueSelect(order);
 }
 
-/* 线索排除法 */
 function openClueSelect(order){
   paused=true;
   document.getElementById('clueTitle').textContent='勘察现场 · '+order.title;
   document.getElementById('clueDesc').textContent='勾选你认为有用的线索（可多选），然后确认。';
   var fb=document.getElementById('clueFeedback');fb.style.display='none';
   var wrap=document.getElementById('clueOpts');wrap.innerHTML='';
-  // 角色被动额外线索
   var clues=order.clues.slice();
   if(state.char&&state.char.passive==='extraClue'&&order.fixKey==='物理'){
-    clues.push({text:'🔧 [小物] 设备表面=c有薄霜，疑似低温',valid:true});
+    clues.push({text:'🔧 [小物] 设备表面有薄霜，疑似低温',valid:true});
   }
   if(state.char&&state.char.passive==='bonusFrag'&&order.fixKey==='生物'){
     clues.push({text:'🌿 [小生] 周围有细微生物活动痕迹',valid:true});
@@ -1060,7 +914,7 @@ function openClueSelect(order){
     (function(idx){
       var c=clues[idx];
       var b=document.createElement('button');
-      b.className='opt clueOpt';b.dataset..valid?'1':'0';
+      b.className='opt clueOpt';
       b.innerHTML='<span class="box"></span><span>'+c.text+'</span>';
       b.onclick=function(){
         if(clueConfirmed)return;
@@ -1075,7 +929,6 @@ function openClueSelect(order){
   }
   document.getElementById('clueConfirm').onclick=function(){
     if(clueConfirmed)return;
-    // 校验：必须选中所有有效线索，且不能选干扰项
     var allValid=true,allGood=true;
     for(var i=0;i<clues.length;i++){
       var picked=cluePicked.indexOf(i)>=0;
@@ -1103,15 +956,14 @@ function openClueSelect(order){
   openOverlay('clueOverlay');
 }
 
-/* 选工具箱 */
 function chooseToolPhase(order){
   paused=true;
-  var txt='【'+(order.type==='main'?'主线':'支线')+'：'+order.title+'】\n\n选哪个工具箱？';
+  var txt='【'+(order.type==='main'?'主线':'支线')+'：'+order.title+'】\n\n选哪个工具箱？这';
   var btns=[];
-  for(var j=0;j<order.tools.length;j++){
-    (function(tool){btns.push({label:tool,fn:function(){chooseTool(tool,order);}});})(order.tools[j]);
+  for(var j故障=0;j<order.tools.length;j++){
+    (function(tool){btns.push({label:tool,更适合fn:function(){chooseTool(tool,order);}});})(order哪个.tools[j]);
   }
-  showDialog('选择工具箱',txt,btns);
+学科  showDialog('选择工具箱？',txt,btns);
 }
 
 function chooseTool(tool,order){
@@ -1128,14 +980,13 @@ function chooseTool(tool,order){
         return;
       }
     }
-    showDialog('动手修','你用'+tool+'试了半天，故障没排除。\n\n'+(state.char&&state.char.passive==='noEnergyLoss'?'（小化被动：不扣精力）':'精力 -1')+'\n\n再想想，这故障更适合哪个学科？',[
+    showDialog('动手修','你用'+tool+'试了半天，故障没排除。\n\n'+(state.char&&state.char.passive==='noEnergyLoss'?'（小化被动：不扣精力）':'精力 -1')+'\n\n再想想，',[
       {label:'重新选',fn:function(){closeDialog();chooseToolPhase(order);}},
       {label:'先离开',fn:closeDialog}
     ]);
   }
 }
 
-/* 答题（答错计入错误，不可重试，避免无限刷星） */
 function startQuiz(order){
   closeOverlay('dlgOverlay');quizIndex=0;showQuizQuestion(order);
 }
@@ -1145,7 +996,6 @@ function showQuizQuestion(order){
   var q=order.quiz[quizIndex];quizAnswered=false;
   paused=true;
   document.getElementById('quizTitle').textContent='规律验证 '+(quizIndex+1)+'/'+order.quiz.length;
-  // 步骤条
   var stepBar=document.getElementById('stepBar');
   if(order.steps&&order.steps.length){
     var sh='';
@@ -1160,7 +1010,6 @@ function showQuizQuestion(order){
   var optsEl=document.getElementById('quizOpts');optsEl.innerHTML='';
   var hintEl=document.getElementById('quizHint');hintEl.style.display='none';
   document.getElementById('quizBtns').style.display='none';
-  // 碎片提示条
   var fh=document.getElementById('fragHintBar'),ft=document.getElementById('fragHintText');
   if(state.fragments.length>0&&q.hint){
     fh.style.display='flex';ft.textContent='';
@@ -1190,7 +1039,6 @@ function showQuizQuestion(order){
           }
           document.getElementById('quizBtns').style.display='flex';
         }else{
-          // 答错：计入错误，直接进入下一题（或结束），不可重试
           currentWrongCount++;
           hintEl.textContent='💡 '+q.hint;hintEl.style.display='block';
           if(quizIndex===order.quiz.length-1){
@@ -1209,7 +1057,6 @@ function showQuizQuestion(order){
   openOverlay('quizOverlay');
 }
 
-/* 完成订单 */
 function finishOrder(order){
   closeOverlay('quizOverlay');paused=false;
   var isNew=state.completedOrders.indexOf(order.id)<0;
@@ -1235,7 +1082,6 @@ function finishOrder(order){
     updateHud();updateEnergyBar();
     if(order.frag)showFragmentAnim(order.frag.icon);
     checkAchievements(order);
-    // 逐关解锁：打完当前图所有主线 → 解锁下一张
     if(allMainDone(order.map)){
       var sorted=MAPS.slice().sort(function(a,b){return a.order-b.order;});
       var curOrder=0;for(var m=0;m<MAPS.length;m++)if(MAPS[m].id===order.map)curOrder=MAPS[m].order;
@@ -1262,7 +1108,6 @@ function finishOrder(order){
   }
 }
 
-/* ========== 成就 ========== */
 function checkAchievements(order){
   var unlocked=[];
   function unlock(id){if(state.achievements.indexOf(id)<0){state.achievements.push(id);unlocked.push(id);}}
@@ -1285,7 +1130,6 @@ function checkAchievements(order){
   if(unlocked.length>0)saveGame();
 }
 
-/* ========== 工具 ========== */
 function getRank(){var r=RANKS[0];for(var i=0;i<RANKS.length;i++)if(state.reputation>=RANKS[i].min)r=RANKS[i];return r;}
 function getNextRank(){for(var i=0;i<RANKS.length;i++)if(RANKS[i].min>state.reputation)return RANKS[i];return null;}
 function getStarStr(orderId){var st=state.stars[orderId]||0,s='';for(var i=0;i<3;i++)s+=(i<st?'★':'☆');return s;}
@@ -1297,10 +1141,9 @@ function allMainDone(mapId){
       if(state.completedOrders.indexOf(ORDERS[k].id)<0)return false;
     }
   }
-  return has; // 没有主线返回 false，避免误判解锁
+  return has;
 }
 
-/* ========== 浮石彩蛋 ========== */
 function triggerStoneEgg(){
   var eggId='egg_stone_'+state.map.id;
   var has=false;for(var i=0;i<state.notes.length;i++)if(state.notes[i].id===eggId)has=true;
@@ -1324,7 +1167,6 @@ function triggerStoneEgg(){
   saveGame();
 }
 
-/* ========== UI ========== */
 function openOverlay(id){document.getElementById(id).classList.add('show');}
 function closeOverlay(id){document.getElementById(id).classList.remove('show');}
 function updateHud(){
@@ -1412,6 +1254,10 @@ function showCollection(){
   html+='</div>';
   document.getElementById('collectionContent').innerHTML=html;openOverlay('collectionOverlay');
 }
+
+// 补上缺失的启动代码
+updateHud();
+requestAnimationFrame(loop);
 </script>
 </body>
 </html>
